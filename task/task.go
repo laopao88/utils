@@ -9,14 +9,14 @@ import (
 type Task[T any] struct {
 	taskLocker  sync.RWMutex
 	TaskMapList map[string]*T
-	projectName string
+	ProjectName string
 }
 
 func NewTask[T any]() *Task[T] {
 	return &Task[T]{
 		taskLocker:  sync.RWMutex{},
 		TaskMapList: make(map[string]*T),
-		projectName: "task.json",
+		ProjectName: "task.json",
 	}
 }
 
@@ -48,12 +48,12 @@ func (tc *Task[T]) Remove(taskId string) {
 }
 
 func (tc *Task[T]) Dump() {
-	utils.DumpInterface(tc.projectName, tc.TaskMapList)
+	utils.DumpInterface(tc.ProjectName, tc.TaskMapList)
 }
 
 func (tc *Task[T]) Load() {
 	v := make(map[string]*T)
-	b := utils.ReadFileToByte(tc.projectName)
+	b := utils.ReadFileToByte(tc.ProjectName)
 	if b != nil {
 		json.Unmarshal(b, &v)
 		tc.TaskMapList = v
