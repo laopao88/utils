@@ -1,8 +1,7 @@
-package task
+package zaia
 
 import (
 	"encoding/json"
-	"github.com/laopao88/zaia/utils"
 	"sync"
 )
 
@@ -48,12 +47,12 @@ func (tc *Task[T]) Remove(taskId string) {
 }
 
 func (tc *Task[T]) Dump() {
-	utils.DumpInterface(tc.ProjectName, tc.TaskMapList)
+	DumpInterface(tc.ProjectName, tc.TaskMapList)
 }
 
 func (tc *Task[T]) Load() {
 	v := make(map[string]*T)
-	b := utils.ReadFileToByte(tc.ProjectName)
+	b := ReadFileToByte(tc.ProjectName)
 	if b != nil {
 		json.Unmarshal(b, &v)
 		tc.TaskMapList = v
