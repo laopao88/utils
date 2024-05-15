@@ -26,7 +26,8 @@ func HttpPost(url string, content string, timeout time.Duration) error {
 	if resp.StatusCode == http.StatusOK {
 		return nil
 	}
-	return errors.New(resp.Status)
+	body, _ := io.ReadAll(resp.Body)
+	return errors.New(resp.Status + " " + string(body))
 }
 
 func HttpRequest(url string, post bool, content []byte, contentType string, timeout time.Duration) ([]byte, error) {
@@ -55,11 +56,11 @@ func HttpRequest(url string, post bool, content []byte, contentType string, time
 		return nil, err
 	}
 	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
 	if resp.StatusCode == http.StatusOK {
-		body, err := io.ReadAll(resp.Body)
 		return body, err
 	}
-	return nil, errors.New(resp.Status)
+	return nil, errors.New(resp.Status + " " + string(body))
 }
 
 func HttpAddParam(address string, k string, v string) (string, error) {
