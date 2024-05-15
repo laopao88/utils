@@ -1,3 +1,3 @@
-module github.com/laopao88/utils
+module github.com/laopao88/zaia
 
 go 1.18
