@@ -6,9 +6,10 @@ import (
 )
 
 type Task[T any] struct {
-	taskLocker  sync.RWMutex
-	TaskMapList map[string]*T
-	ProjectName string
+	taskLocker     sync.RWMutex
+	TaskMapList    map[string]*T
+	ProjectName    string
+	StatusCallback func(taskId string, t *T)
 }
 
 func NewTask[T any]() *Task[T] {
@@ -24,6 +25,11 @@ func (tc *Task[T]) Set(taskId string, t *T) {
 	defer tc.taskLocker.Unlock()
 	tc.TaskMapList[taskId] = t
 	tc.Dump()
+	if tc.StatusCallback != nil {
+		go func() {
+			tc.StatusCallback(taskId, t)
+		}()
+	}
 }
 
 func (tc *Task[T]) Get(taskId string) *T {

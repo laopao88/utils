@@ -30,7 +30,7 @@ func HttpPost(url string, content string, timeout time.Duration) error {
 	return errors.New(resp.Status + " " + string(body))
 }
 
-func HttpRequest(url string, post bool, content []byte, contentType string, timeout time.Duration) ([]byte, error) {
+func HttpRequest(url string, post bool, content []byte, contentType string, timeout time.Duration, headerCallback func(header http.Header)) ([]byte, error) {
 	var req *http.Request
 	var err error
 	if post {
@@ -47,6 +47,9 @@ func HttpRequest(url string, post bool, content []byte, contentType string, time
 	}
 	if post {
 		req.Header.Set("Content-Type", contentType)
+	}
+	if headerCallback != nil {
+		headerCallback(req.Header)
 	}
 	client := &http.Client{
 		Timeout: timeout,
