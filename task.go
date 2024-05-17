@@ -42,6 +42,17 @@ func (tc *Task[T]) Get(taskId string) *T {
 	return nil
 }
 
+func (tc *Task[T]) Find(callback func(t *T) bool) (string, *T) {
+	tc.taskLocker.Lock()
+	defer tc.taskLocker.Unlock()
+	for k, v := range tc.TaskMapList {
+		if callback(v) {
+			return k, &*v
+		}
+	}
+	return "", nil
+}
+
 func (tc *Task[T]) Remove(taskId string) {
 	tc.taskLocker.Lock()
 	defer tc.taskLocker.Unlock()
