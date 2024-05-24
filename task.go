@@ -16,7 +16,7 @@ func NewTask[T any]() *Task[T] {
 	return &Task[T]{
 		taskLocker:  sync.RWMutex{},
 		TaskMapList: make(map[string]*T),
-		ProjectName: "task.json",
+		ProjectName: "",
 	}
 }
 
@@ -64,14 +64,18 @@ func (tc *Task[T]) Remove(taskId string) {
 }
 
 func (tc *Task[T]) Dump() {
-	DumpInterface(tc.ProjectName, tc.TaskMapList)
+	if len(tc.ProjectName) > 0 {
+		DumpInterface(tc.ProjectName, tc.TaskMapList)
+	}
 }
 
 func (tc *Task[T]) Load() {
-	v := make(map[string]*T)
-	b := ReadFileToByte(tc.ProjectName)
-	if b != nil {
-		json.Unmarshal(b, &v)
-		tc.TaskMapList = v
+	if len(tc.ProjectName) > 0 {
+		v := make(map[string]*T)
+		b := ReadFileToByte(tc.ProjectName)
+		if b != nil {
+			json.Unmarshal(b, &v)
+			tc.TaskMapList = v
+		}
 	}
 }
